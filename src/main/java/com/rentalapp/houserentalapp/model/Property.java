@@ -20,8 +20,10 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/* This class has the details of the Property */
+
 @Entity
-@Table(name = "properties")
+@Table(name = "property")
 @Getter
 @Setter
 @NoArgsConstructor
