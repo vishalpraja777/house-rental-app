@@ -41,7 +41,7 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "renter_id", nullable = false)
-    private User renter;
+    private Users renter;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
