@@ -8,4 +8,8 @@ public interface UserService {
     ResponseEntity<ResponseObject<Users>> register(Users user);
 
     ResponseEntity<ResponseObject<String>> login(Users user);
+
+    ResponseEntity<ResponseObject<Users>> getUserById(Long userId);
+
+    ResponseEntity<ResponseObject<Users>> updateUserById(Long userId, Users user);
 }

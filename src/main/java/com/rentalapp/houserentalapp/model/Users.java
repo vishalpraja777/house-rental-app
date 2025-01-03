@@ -55,6 +55,10 @@ public class Users {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -63,6 +67,10 @@ public class Users {
 
     public enum Role {
         OWNER, RENTER, ADMIN
+    }
+
+    public enum Status {
+        ACTIVE, INACTIVE
     }
 
     public Long getUserId() {
@@ -127,6 +135,14 @@ public class Users {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {
