@@ -1,14 +1,12 @@
 package com.rentalapp.houserentalapp.auth;
 
 import com.rentalapp.houserentalapp.dao.UserRepository;
-import com.rentalapp.houserentalapp.model.Users;
+import com.rentalapp.houserentalapp.model.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

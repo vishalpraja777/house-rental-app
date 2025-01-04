@@ -1,6 +1,6 @@
 package com.rentalapp.houserentalapp.service.impl;
 
-import com.rentalapp.houserentalapp.model.Users;
+import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.util.SecurityUtil;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

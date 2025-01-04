@@ -2,7 +2,8 @@ package com.rentalapp.houserentalapp.service.impl;
 
 import com.rentalapp.houserentalapp.auth.jwt.JWTService;
 import com.rentalapp.houserentalapp.dao.UserRepository;
-import com.rentalapp.houserentalapp.model.Users;
+import com.rentalapp.houserentalapp.model.ChangePassword;
+import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.UserService;
 import com.rentalapp.houserentalapp.util.ResponseObject;
 import com.rentalapp.houserentalapp.util.CustomResponseUtil;
@@ -14,8 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -90,13 +89,12 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     @Override
     public ResponseEntity<ResponseObject<Users>> updateUserById(Long userId, Users oldUser) {
 
-        if(!isUserAuthorized(oldUser)) {
-            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
             return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+        }
+        if(!isUserAuthorized(optionalUser.get())) {
+            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
 
 //        Update the required fields
@@ -104,12 +102,53 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         try {
             Users savedUser = userRepository.save(userToUpdate);
-
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             return CustomResponseUtil.getFailureResponse("Email or Phone already exists", HttpStatus.CONFLICT);
         } catch (Exception e) {
             return CustomResponseUtil.getFailureResponse("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject<String>> changeUserStatus(Long userId, Users user) {
+
+        Optional<Users> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty()) {
+            return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+        }
+        if(!isUserAuthorized(optionalUser.get())) {
+            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            userRepository.updateStatus(user.getStatus().toString(), userId);
+            return CustomResponseUtil.getSuccessResponse("User Status Changed", HttpStatus.OK);
+        } catch (Exception e) {
+            return CustomResponseUtil.getFailureResponse("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject<String>> changePassword(Long userId, ChangePassword changePassword) {
+
+        Optional<Users> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty()) {
+            return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+        }
+        if(!isUserAuthorized(optionalUser.get())) {
+            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+//            if(encodedPassword.equals(optionalUser.get().getPassword())) {
+            if(passwordEncoder.matches(changePassword.getOldPassword(), optionalUser.get().getPassword())) {
+                userRepository.changePassword(passwordEncoder.encode(changePassword.getNewPassword()), userId);
+                return CustomResponseUtil.getSuccessResponse("Password changed", HttpStatus.OK);
+            }
+            return CustomResponseUtil.getFailureResponse("Old Password is incorrect", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return CustomResponseUtil.getFailureResponse("Error changing password", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

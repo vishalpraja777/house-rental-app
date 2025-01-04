@@ -1,4 +1,4 @@
-package com.rentalapp.houserentalapp.model;
+package com.rentalapp.houserentalapp.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
