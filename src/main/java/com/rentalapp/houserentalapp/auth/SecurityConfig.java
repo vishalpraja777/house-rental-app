@@ -29,10 +29,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        String[] unAuthenticatedEndpoints = {"/api/auth/register", "api/auth/login"};
+
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/register", "api/auth/login").permitAll()
+                        .requestMatchers(unAuthenticatedEndpoints).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
