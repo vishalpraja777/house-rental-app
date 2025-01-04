@@ -13,7 +13,7 @@ public class UserServiceBaseImpl {
 
         UserDetails currentUser = SecurityUtil.getCurrentUser();
 
-        if (currentUser == null) {
+        if (currentUser == null || oldUser == null || !Users.Status.ACTIVE.equals(oldUser.getStatus())) {
             return false;
         }
 
