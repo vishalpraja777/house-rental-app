@@ -6,4 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface PropertyService {
     ResponseEntity<ResponseObject<Property>> addProperty(Property property);
+
+    ResponseEntity<ResponseObject<Property>> getProperty(Long propertyId);
 }

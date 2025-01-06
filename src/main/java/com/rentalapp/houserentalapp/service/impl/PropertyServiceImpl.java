@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
@@ -43,6 +45,15 @@ public class PropertyServiceImpl implements PropertyService {
         } catch (Exception e) {
             return CustomResponseUtil.getFailureResponse("Error Creating Property", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject<Property>> getProperty(Long propertyId) {
+
+        Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
+
+        return optionalProperty.map(property -> CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK)).orElseGet(() -> CustomResponseUtil.getFailureResponse("Property Not Found", HttpStatus.NOT_FOUND));
 
     }
 }

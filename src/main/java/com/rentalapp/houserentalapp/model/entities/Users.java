@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /* This class has the details of the User, whether Admin, Owner or Renter */
@@ -27,7 +28,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Data
-public class Users {
+public class Users implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
