@@ -7,5 +7,9 @@ import org.springframework.http.ResponseEntity;
 public interface PropertyService {
     ResponseEntity<ResponseObject<Property>> addProperty(Property property);
 
-    ResponseEntity<ResponseObject<Property>> getProperty(Long propertyId);
+    ResponseEntity<ResponseObject<Property>> getPropertyById(Long propertyId);
+
+    ResponseEntity<ResponseObject<Property>> updatePropertyById(Long propertyId, Property property);
+
+    ResponseEntity<ResponseObject<String>> deletePropertyById(Long propertyId);
 }

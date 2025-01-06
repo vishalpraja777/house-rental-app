@@ -5,8 +5,10 @@ import com.rentalapp.houserentalapp.dao.UserRepository;
 import com.rentalapp.houserentalapp.model.ChangePassword;
 import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.UserService;
+import com.rentalapp.houserentalapp.util.Constants;
 import com.rentalapp.houserentalapp.util.ResponseObject;
 import com.rentalapp.houserentalapp.util.CustomResponseUtil;
+import com.rentalapp.houserentalapp.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
                 (userRepository.findByEmail(user.getEmail()) != null) ||
                 (userRepository.findByPhone(user.getPhone()) != null)) {
 
-            return CustomResponseUtil.getFailureResponse("User already exists", HttpStatus.CONFLICT);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
         try {
@@ -54,7 +56,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.CREATED);
         } catch (Exception e) {
-            return CustomResponseUtil.getFailureResponse("Error creating user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_CREATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -69,7 +71,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
                 return CustomResponseUtil.getSuccessResponse(token, HttpStatus.OK);
             } else {
-                throw new BadCredentialsException("Invalid Credentials");
+                throw new BadCredentialsException(Constants.INVALID_CREDENTIALS);
             }
         } catch (BadCredentialsException e) {
             return CustomResponseUtil.getFailureResponse(e.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -83,7 +85,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             Users user = optioanlUser.get();
             return CustomResponseUtil.getSuccessResponse(user, HttpStatus.OK);
         }
-        return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+        return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -91,22 +93,23 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
-            return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-        if(!isUserAuthorized(optionalUser.get())) {
-            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+        Users userToUpdate = optionalUser.get();
+        if(!SecurityUtil.isUserAuthorized(userToUpdate)) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
 //        Update the required fields
-        Users userToUpdate = updateUserFields(optionalUser.get(), oldUser);
+        updateUserFields(userToUpdate, oldUser);
 
         try {
             Users savedUser = userRepository.save(userToUpdate);
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
-            return CustomResponseUtil.getFailureResponse("Email or Phone already exists", HttpStatus.CONFLICT);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         } catch (Exception e) {
-            return CustomResponseUtil.getFailureResponse("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,17 +118,17 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
-            return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-        if(!isUserAuthorized(optionalUser.get())) {
-            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+        if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
         try {
             userRepository.updateStatus(user.getStatus().toString(), userId);
-            return CustomResponseUtil.getSuccessResponse("User Status Changed", HttpStatus.OK);
+            return CustomResponseUtil.getSuccessResponse(Constants.USER_STATUS_CHANGED, HttpStatus.OK);
         } catch (Exception e) {
-            return CustomResponseUtil.getFailureResponse("Error updating user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -134,21 +137,21 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
-            return CustomResponseUtil.getFailureResponse("User not found", HttpStatus.NOT_FOUND);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-        if(!isUserAuthorized(optionalUser.get())) {
-            return CustomResponseUtil.getFailureResponse("Unauthorized", HttpStatus.UNAUTHORIZED);
+        if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
         try {
 //            if(encodedPassword.equals(optionalUser.get().getPassword())) {
             if(passwordEncoder.matches(changePassword.getOldPassword(), optionalUser.get().getPassword())) {
                 userRepository.changePassword(passwordEncoder.encode(changePassword.getNewPassword()), userId);
-                return CustomResponseUtil.getSuccessResponse("Password changed", HttpStatus.OK);
+                return CustomResponseUtil.getSuccessResponse(Constants.PASSWORD_CHANGED, HttpStatus.OK);
             }
-            return CustomResponseUtil.getFailureResponse("Old Password is incorrect", HttpStatus.BAD_REQUEST);
+            return CustomResponseUtil.getFailureResponse(Constants.OLD_PASSWORD_IS_INCORRECT, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return CustomResponseUtil.getFailureResponse("Error changing password", HttpStatus.INTERNAL_SERVER_ERROR);
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_CHANGING_PASSWORD, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

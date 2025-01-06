@@ -9,21 +9,7 @@ import java.time.LocalDateTime;
 
 public class UserServiceBaseImpl {
 
-    protected static boolean isUserAuthorized(Users oldUser) {
-
-        UserDetails currentUser = SecurityUtil.getCurrentUser();
-
-        if (currentUser == null || oldUser == null || !Users.Status.ACTIVE.equals(oldUser.getStatus())) {
-            return false;
-        }
-
-        if (currentUser.getUsername().equals(oldUser.getUsername())) {
-            return true;
-        }
-        return currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
-    }
-
-    protected Users updateUserFields(Users userToUpdate, Users oldUser) {
+    protected void updateUserFields(Users userToUpdate, Users oldUser) {
 
         if (oldUser.getUsername() != null) {
             userToUpdate.setUsername(oldUser.getUsername());
@@ -42,7 +28,6 @@ public class UserServiceBaseImpl {
         }
         userToUpdate.setUpdatedAt(LocalDateTime.now());
 
-        return userToUpdate;
     }
 
 }

@@ -2,6 +2,7 @@ package com.rentalapp.houserentalapp.util;
 
 import com.rentalapp.houserentalapp.model.entities.Users;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +14,20 @@ public class SecurityUtil {
             return (UserDetails) authentication.getPrincipal();
         }
         return null; // Anonymous or unauthenticated user
+    }
+
+    public static boolean isUserAuthorized(Users oldUser) {
+
+        UserDetails currentUser = SecurityUtil.getCurrentUser();
+
+        if (currentUser == null || !isUserActive(oldUser)) {
+            return false;
+        }
+
+        if (currentUser.getUsername().equals(oldUser.getUsername())) {
+            return true;
+        }
+        return currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
     }
 
     public static boolean isUserActive(Users user) {
