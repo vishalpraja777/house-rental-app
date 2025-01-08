@@ -20,14 +20,19 @@ public class SecurityUtil {
 
         UserDetails currentUser = SecurityUtil.getCurrentUser();
 
-        if (currentUser == null || !isUserActive(oldUser)) {
+        if(currentUser == null ) {
             return false;
         }
 
-        if (currentUser.getUsername().equals(oldUser.getUsername())) {
+        if (currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
             return true;
         }
-        return currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+
+        if (!isUserActive(oldUser)) {
+            return false;
+        }
+
+        return currentUser.getUsername().equals(oldUser.getUsername());
     }
 
     public static boolean isUserActive(Users user) {

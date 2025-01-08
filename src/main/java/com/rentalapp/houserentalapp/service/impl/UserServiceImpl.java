@@ -3,6 +3,8 @@ package com.rentalapp.houserentalapp.service.impl;
 import com.rentalapp.houserentalapp.auth.jwt.JWTService;
 import com.rentalapp.houserentalapp.dao.UserRepository;
 import com.rentalapp.houserentalapp.model.ChangePassword;
+import com.rentalapp.houserentalapp.model.LoginUserDto;
+import com.rentalapp.houserentalapp.model.RegisterUserDto;
 import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.UserService;
 import com.rentalapp.houserentalapp.util.Constants;
@@ -39,7 +41,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     }
 
     @Override
-    public ResponseEntity<ResponseObject<Users>> register(Users user) {
+    public ResponseEntity<ResponseObject<Users>> register(RegisterUserDto user) {
 
         if((userRepository.findByUsername(user.getUsername()) != null) ||
                 (userRepository.findByEmail(user.getEmail()) != null) ||
@@ -48,20 +50,31 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             return CustomResponseUtil.getFailureResponse(Constants.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
-        try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setStatus(Users.Status.ACTIVE);
 
-            Users savedUser = userRepository.save(user);
+        try {
+//            Admin cannot be registered by default
+            if(user.getRole().equals(Users.Role.ADMIN)) {
+                throw new DataIntegrityViolationException("Admin cannot be registered by default");
+            }
+
+            Users userToSave = new Users();
+            addUserFiledsToRegister(userToSave, user);
+            userToSave.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Users savedUser = userRepository.save(userToSave);
 
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+            return CustomResponseUtil.getFailureResponse(Constants.ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT, HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e) {
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_CREATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+
     @Override
-    public ResponseEntity<ResponseObject<String>> login(Users user) {
+    public ResponseEntity<ResponseObject<String>> login(LoginUserDto user) {
 
         try {
             Authentication authentication = authenticationManager
@@ -114,7 +127,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     }
 
     @Override
-    public ResponseEntity<ResponseObject<String>> changeUserStatus(Long userId, Users user) {
+    public ResponseEntity<ResponseObject<String>> changeUserStatus(Long userId, Users.Status status) {
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
@@ -125,7 +138,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         }
 
         try {
-            userRepository.updateStatus(user.getStatus().toString(), userId);
+            userRepository.updateStatus(status.toString(), userId);
             return CustomResponseUtil.getSuccessResponse(Constants.USER_STATUS_CHANGED, HttpStatus.OK);
         } catch (Exception e) {
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -12,6 +12,7 @@ public class Constants {
     public static final String PASSWORD_CHANGED = "Password Changed";
     public static final String OLD_PASSWORD_IS_INCORRECT = "Old Password is incorrect";
     public static final String ERROR_CHANGING_PASSWORD = "Error changing password";
+    public static final String ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT = "Admin cannot be registered by default";
 
     public static final String ERROR_CREATING_PROPERTY = "Error Creating Property";
     public static final String PROPERTY_NOT_FOUND = "Property Not Found";

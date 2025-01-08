@@ -1,5 +1,6 @@
 package com.rentalapp.houserentalapp.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -88,9 +89,11 @@ public class Property implements Serializable {
     @Column(length = 255)
     private String googleMapsUrl;
 
+    @JsonIgnore
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @JsonIgnore
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 

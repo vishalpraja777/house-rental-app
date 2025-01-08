@@ -1,5 +1,6 @@
 package com.rentalapp.houserentalapp.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -48,6 +49,7 @@ public class Users implements Serializable {
     @Column(unique = true, nullable = false, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -62,9 +64,11 @@ public class Users implements Serializable {
     @Column(nullable = false)
     private Status status;
 
+    @JsonIgnore
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @JsonIgnore
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
