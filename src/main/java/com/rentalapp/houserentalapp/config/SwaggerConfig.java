@@ -18,7 +18,16 @@ public class SwaggerConfig {
                 new Info().title("Houser Rental App").version("1.0")
                         .description("Houser Rental App"))
                 .servers(Arrays.asList(new Server().url("http://localhost:8080/").description("Local")))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+//                .components(new Components().addSecuritySchemes(
+//                        "bearerAuth", new SecurityScheme()
+//                                .type(SecurityScheme.Type.HTTP)
+//                                .scheme("bearer")
+//                                .bearerFormat("JWT")
+//                                .in(SecurityScheme.In.HEADER)
+//                                .name("Authorization")
+//                ))
+                ;
     }
 
 }

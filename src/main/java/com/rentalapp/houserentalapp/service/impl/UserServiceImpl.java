@@ -11,6 +11,7 @@ import com.rentalapp.houserentalapp.util.Constants;
 import com.rentalapp.houserentalapp.util.ResponseObject;
 import com.rentalapp.houserentalapp.util.CustomResponseUtil;
 import com.rentalapp.houserentalapp.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserServiceImpl extends UserServiceBaseImpl implements UserService {
 
@@ -46,7 +48,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         if((userRepository.findByUsername(user.getUsername()) != null) ||
                 (userRepository.findByEmail(user.getEmail()) != null) ||
                 (userRepository.findByPhone(user.getPhone()) != null)) {
-
+            log.error(Constants.USER_ALREADY_EXISTS + " : " + user.getUsername());
             return CustomResponseUtil.getFailureResponse(Constants.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
@@ -65,9 +67,11 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
+            log.error(Constants.ERROR_CREATING_USER + ", possible cause: " + Constants.ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT);
             return CustomResponseUtil.getFailureResponse(Constants.ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
+            log.error(Constants.ERROR_CREATING_USER + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_CREATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -87,18 +91,28 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
                 throw new BadCredentialsException(Constants.INVALID_CREDENTIALS);
             }
         } catch (BadCredentialsException e) {
+            log.error(Constants.INVALID_CREDENTIALS + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            log.error(Constants.ERROR_LOGGING_IN_USER + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_LOGGING_IN_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity<ResponseObject<Users>> getUserById(Long userId) {
-        Optional<Users> optioanlUser = userRepository.findById(userId);
-        if(optioanlUser.isPresent()) {
-            Users user = optioanlUser.get();
-            return CustomResponseUtil.getSuccessResponse(user, HttpStatus.OK);
+        try {
+            Optional<Users> optioanlUser = userRepository.findById(userId);
+            if (optioanlUser.isPresent()) {
+                Users user = optioanlUser.get();
+                return CustomResponseUtil.getSuccessResponse(user, HttpStatus.OK);
+            }
+            log.error(Constants.USER_NOT_FOUND + " : " + userId);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error(Constants.ERROR_GETTING_USER + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_GETTING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -106,10 +120,12 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
+            log.error(Constants.USER_NOT_FOUND + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         Users userToUpdate = optionalUser.get();
         if(!SecurityUtil.isUserAuthorized(userToUpdate)) {
+            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
@@ -120,8 +136,10 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             Users savedUser = userRepository.save(userToUpdate);
             return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
+            log.error(Constants.USER_ALREADY_EXISTS + " : Username: " + oldUser.getUsername() + ", Email: " + oldUser.getEmail() + ", Phone: " + oldUser.getPhone());
             return CustomResponseUtil.getFailureResponse(Constants.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         } catch (Exception e) {
+            log.error(Constants.ERROR_UPDATING_USER + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -131,9 +149,11 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
         Optional<Users> optionalUser = userRepository.findById(userId);
         if(optionalUser.isEmpty()) {
+            log.error(Constants.USER_NOT_FOUND + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
+            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
@@ -141,6 +161,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             userRepository.updateStatus(status.toString(), userId);
             return CustomResponseUtil.getSuccessResponse(Constants.USER_STATUS_CHANGED, HttpStatus.OK);
         } catch (Exception e) {
+            log.error(Constants.ERROR_UPDATING_USER + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -149,10 +170,11 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     public ResponseEntity<ResponseObject<String>> changePassword(Long userId, ChangePassword changePassword) {
 
         Optional<Users> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) {
+        if(optionalUser.isEmpty()) {log.error(Constants.USER_NOT_FOUND + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
+            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
@@ -162,8 +184,10 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
                 userRepository.changePassword(passwordEncoder.encode(changePassword.getNewPassword()), userId);
                 return CustomResponseUtil.getSuccessResponse(Constants.PASSWORD_CHANGED, HttpStatus.OK);
             }
+            log.error(Constants.OLD_PASSWORD_IS_INCORRECT + ", for User : " + userId);
             return CustomResponseUtil.getFailureResponse(Constants.OLD_PASSWORD_IS_INCORRECT, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            log.error(Constants.ERROR_CHANGING_PASSWORD + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_CHANGING_PASSWORD, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

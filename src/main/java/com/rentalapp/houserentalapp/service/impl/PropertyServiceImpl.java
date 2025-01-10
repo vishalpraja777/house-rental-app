@@ -9,6 +9,7 @@ import com.rentalapp.houserentalapp.util.Constants;
 import com.rentalapp.houserentalapp.util.CustomResponseUtil;
 import com.rentalapp.houserentalapp.util.ResponseObject;
 import com.rentalapp.houserentalapp.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
@@ -45,6 +47,7 @@ public class PropertyServiceImpl implements PropertyService {
             Property save = propertyRepository.save(property);
             return CustomResponseUtil.getSuccessResponse(save, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error(Constants.ERROR_CREATING_PROPERTY + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_CREATING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -53,10 +56,14 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public ResponseEntity<ResponseObject<Property>> getPropertyById(Long propertyId) {
 
-        Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
+        try {
+            Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
 
-        return optionalProperty.map(property -> CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK)).orElseGet(() -> CustomResponseUtil.getFailureResponse(Constants.PROPERTY_NOT_FOUND, HttpStatus.NOT_FOUND));
-
+            return optionalProperty.map(property -> CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK)).orElseGet(() -> CustomResponseUtil.getFailureResponse(Constants.PROPERTY_NOT_FOUND, HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            log.error(Constants.ERROR_GETTING_PROPERTY + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_GETTING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -79,6 +86,7 @@ public class PropertyServiceImpl implements PropertyService {
             Property savedProperty = propertyRepository.save(propertyToUpdate);
             return CustomResponseUtil.getSuccessResponse(savedProperty, HttpStatus.OK);
         } catch (Exception e) {
+            log.error(Constants.ERROR_UPDATING_PROPERTY + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPDATING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -100,7 +108,8 @@ public class PropertyServiceImpl implements PropertyService {
             propertyRepository.delete(propertyToDelete);
             return CustomResponseUtil.getSuccessResponse(Constants.PROPERTY_DELETED_SUCCESSFULLY, HttpStatus.OK);
         } catch (Exception e) {
-            return CustomResponseUtil.getFailureResponse(Constants.UNABLE_TO_DELETE_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error(Constants.ERROR_DELETING_PROPERTY + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_DELETING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
