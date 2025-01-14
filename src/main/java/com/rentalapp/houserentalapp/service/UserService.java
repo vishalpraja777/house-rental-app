@@ -8,6 +8,8 @@ import com.rentalapp.houserentalapp.util.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
+    ResponseEntity<ResponseObject<Users>> getLoggedInUser();
+
     ResponseEntity<ResponseObject<Users>> register(RegisterUserDto user);
 
     ResponseEntity<ResponseObject<String>> login(LoginUserDto user);
@@ -19,4 +21,5 @@ public interface UserService {
     ResponseEntity<ResponseObject<String>> changeUserStatus(Long userId, Users.Status status);
 
     ResponseEntity<ResponseObject<String>> changePassword(Long userId, ChangePassword changePassword);
+
 }

@@ -20,9 +20,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -40,6 +42,21 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject<Users>> getLoggedInUser() {
+        UserDetails currentUser = SecurityUtil.getCurrentUser();
+        if(currentUser == null || currentUser.getUsername() == null) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            Users user = userRepository.findByUsername(currentUser.getUsername());
+            return CustomResponseUtil.getSuccessResponse(user, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(Constants.ERROR_GETTING_USER + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_GETTING_USER, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -125,7 +142,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         }
         Users userToUpdate = optionalUser.get();
         if(!SecurityUtil.isUserAuthorized(userToUpdate)) {
-            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
+            log.error(Constants.USER_UNAUTHORIZED + " : " + Objects.requireNonNull(SecurityUtil.getCurrentUser()).getUsername());
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
@@ -153,7 +170,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
-            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
+            log.error(Constants.USER_UNAUTHORIZED + " : " + Objects.requireNonNull(SecurityUtil.getCurrentUser()).getUsername());
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 
@@ -174,7 +191,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             return CustomResponseUtil.getFailureResponse(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         if(!SecurityUtil.isUserAuthorized(optionalUser.get())) {
-            log.error(Constants.USER_UNAUTHORIZED + " : " + userId);
+            log.error(Constants.USER_UNAUTHORIZED + " : " + Objects.requireNonNull(SecurityUtil.getCurrentUser()).getUsername());
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 

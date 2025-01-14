@@ -22,4 +22,10 @@ public class Constants {
     public static final String ERROR_UPDATING_PROPERTY = "Error updating property";
     public static final String PROPERTY_DELETED_SUCCESSFULLY = "Property Deleted Successfully";
     public static final String ERROR_DELETING_PROPERTY = "Error Deleting Property";
+
+    public static final String ERROR_UPLOADING_PROPERTY_MEDIA = "Error Uploading Property Media";
+    public static final String INCORRECT_IMAGE_OR_VIDEO_FILE = "Incorrect Image or Video File";
+    public static final String PROPERTY_MEDIA_NOT_FOUND = "Property Media Not Found";
+    public static final String PROPERTY_MEDIA_DELETED_SUCCESSFULLY = "Property Media Deleted Successfully";
+    public static final String ERROR_DELETING_PROPERTY_MEDIA = "Error Deleting Property Media";
 }

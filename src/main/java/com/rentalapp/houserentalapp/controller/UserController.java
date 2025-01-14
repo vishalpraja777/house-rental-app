@@ -20,6 +20,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/get-loggedin-user")
+    @Operation(summary = "Get Logged In User API")
+    public ResponseEntity<ResponseObject<Users>> getLoggedInUser() {
+        log.info("Get Logged In User API Called");
+        return userService.getLoggedInUser();
+    }
+
     @GetMapping("/get-user/{userId}")
     @Operation(summary = "Get User By Id API")
     public ResponseEntity<ResponseObject<Users>> getUserById(@PathVariable Long userId) {
