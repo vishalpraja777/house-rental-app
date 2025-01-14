@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -44,6 +46,10 @@ public class PropertyServiceImpl implements PropertyService {
 
         try {
             property.setOwner(user);
+            property.setCity(property.getCity().toUpperCase());
+            property.setState(property.getState().toUpperCase());
+            property.setCountry(property.getCountry().toUpperCase());
+
             Property save = propertyRepository.save(property);
             return CustomResponseUtil.getSuccessResponse(save, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -113,6 +119,19 @@ public class PropertyServiceImpl implements PropertyService {
         }
     }
 
+    @Override
+    public ResponseEntity<ResponseObject<List<Property>>> searchProperties(String city, BigDecimal priceMin, BigDecimal priceMax, Property.PropertyType type, Double latitude, Double longitude, Double radius) {
+        city = (city == null || city.isEmpty()) ? null : city.toUpperCase();
+        try {
+            List<Property> properties = propertyRepository.searchProperties(city, priceMin, priceMax, type, latitude, longitude, radius);
+
+            return CustomResponseUtil.getSuccessResponse(properties, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(Constants.ERROR_SEARCHING_PROPERTY + ", possible cause: " + e.getMessage());
+            return CustomResponseUtil.getFailureResponse(Constants.ERROR_SEARCHING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private void updatePropertyFields(Property propertyToUpdate, Property oldProperty) {
 
         if (oldProperty.getTitle() != null)
@@ -122,11 +141,11 @@ public class PropertyServiceImpl implements PropertyService {
         if (oldProperty.getAddress() != null)
             propertyToUpdate.setAddress(oldProperty.getAddress());
         if (oldProperty.getCity() != null)
-            propertyToUpdate.setCity(oldProperty.getCity());
+            propertyToUpdate.setCity(oldProperty.getCity().toUpperCase());
         if (oldProperty.getState() != null)
-            propertyToUpdate.setState(oldProperty.getState());
+            propertyToUpdate.setState(oldProperty.getState().toUpperCase());
         if (oldProperty.getCountry() != null)
-            propertyToUpdate.setCountry(oldProperty.getCountry());
+            propertyToUpdate.setCountry(oldProperty.getCountry().toUpperCase());
         if (oldProperty.getPincode() != null)
             propertyToUpdate.setPincode(oldProperty.getPincode());
         if (oldProperty.getPrice() != null)

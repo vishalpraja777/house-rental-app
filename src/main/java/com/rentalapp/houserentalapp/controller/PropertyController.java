@@ -8,14 +8,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -52,6 +48,21 @@ public class PropertyController {
     public ResponseEntity<ResponseObject<String>> deletePropertyById(@PathVariable Long propertyId) {
         log.info("Delete Property API Called for Property: {}", propertyId);
         return propertyService.deletePropertyById(propertyId);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseObject<List<Property>>> searchProperties(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) BigDecimal priceMin,
+            @RequestParam(required = false) BigDecimal priceMax,
+            @RequestParam(required = false) Property.PropertyType type,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false, defaultValue = "5") Double radius) {
+
+        log.info("Search Property API Called for city: {}, priceMin: {}, priceMax: {}, type: {}, latitude: {}, longitude: {}, radius: {}", city, priceMin, priceMax, type, latitude, longitude, radius);
+        return propertyService.searchProperties(city, priceMin, priceMax, type, latitude, longitude, radius);
+
     }
 
 }
