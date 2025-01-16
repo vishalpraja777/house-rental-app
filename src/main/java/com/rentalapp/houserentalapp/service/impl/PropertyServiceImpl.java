@@ -41,7 +41,7 @@ public class PropertyServiceImpl implements PropertyService {
         Users user = userRepository.findByUsername(currentUser.getUsername());
 
         if(!SecurityUtil.isUserActive(user)) {
-            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+            return CustomResponseUtil.getFailureResponse(Constants.USER_INACTIVE, HttpStatus.UNAUTHORIZED);
         }
 
         try {

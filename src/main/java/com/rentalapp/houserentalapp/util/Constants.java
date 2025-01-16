@@ -3,6 +3,7 @@ package com.rentalapp.houserentalapp.util;
 public class Constants {
 
     public static final String USER_UNAUTHORIZED = "User is UnAuthorized";
+    public static final String USER_INACTIVE = "User is Inactive";
     public static final String USER_ALREADY_EXISTS = "User already exists";
     public static final String ERROR_CREATING_USER = "Error creating user";
     public static final String INVALID_CREDENTIALS = "Invalid Credentials";
@@ -29,4 +30,13 @@ public class Constants {
     public static final String PROPERTY_MEDIA_NOT_FOUND = "Property Media Not Found";
     public static final String PROPERTY_MEDIA_DELETED_SUCCESSFULLY = "Property Media Deleted Successfully";
     public static final String ERROR_DELETING_PROPERTY_MEDIA = "Error Deleting Property Media";
+
+    public static final String ERROR_ADDING_PROPERTY_TO_FAVORITE = "Error Adding Property to Favorite";
+    public static final String PROPERTY_ALREADY_IN_FAVORITES = "Property already in Favorites";
+    public static final String FAVORITE_NOT_FOUND = "Favorite Not Found";
+    public static final String FAVORITE_DELETED_SUCCESSFULLY = "Favorite Deleted Successfully";
+    public static final String ERROR_DELETING_FAVORITE = "Error Deleting Favorite";
+
+
+
 }

@@ -52,6 +52,11 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         }
         try {
             Users user = userRepository.findByUsername(currentUser.getUsername());
+
+            if(!SecurityUtil.isUserActive(user)) {
+                return CustomResponseUtil.getFailureResponse(Constants.USER_INACTIVE, HttpStatus.UNAUTHORIZED);
+            }
+
             return CustomResponseUtil.getSuccessResponse(user, HttpStatus.OK);
         } catch (Exception e) {
             log.error(Constants.ERROR_GETTING_USER + ", possible cause: " + e.getMessage());
