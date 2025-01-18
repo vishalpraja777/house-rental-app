@@ -6,6 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Objects;
+
 public class SecurityUtil {
 
     public static UserDetails getCurrentUser() {
@@ -24,7 +26,7 @@ public class SecurityUtil {
             return false;
         }
 
-        if (currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (isAdmin()) {
             return true;
         }
 
@@ -33,6 +35,10 @@ public class SecurityUtil {
         }
 
         return currentUser.getUsername().equals(oldUser.getUsername());
+    }
+
+    public static boolean isAdmin() {
+        return Objects.requireNonNull(getCurrentUser()).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
     }
 
     public static boolean isUserActive(Users user) {
