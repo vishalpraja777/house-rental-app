@@ -98,7 +98,7 @@ public class Property implements Serializable {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     public enum PropertyType {
-        APARTMENT, HOUSE, VILLA
+        APARTMENT, HOUSE, VILLA, PG, HOSTEL
     }
 
     public enum Status {

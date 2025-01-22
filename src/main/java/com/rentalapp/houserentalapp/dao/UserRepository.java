@@ -18,11 +18,16 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "update users set status=?1 where user_id=?2", nativeQuery = true)
-    Integer updateStatus(@Param("status") String status, @Param("id") Long id);
+    @Query("update Users set status=:status where userId=:userId")
+    Integer updateStatus(@Param("status") Users.Status status, @Param("userId") Long userId);
 
     @Transactional
     @Modifying
-    @Query(value = "update users set password=?1 where user_id=?2", nativeQuery = true)
+    @Query("update Users set role=:role where userId=:userId")
+    Integer updateRole(@Param("role") Users.Role role, @Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("update Users set password=:encodedPassword where userId=:userId")
     Integer changePassword(String encodedPassword, Long userId);
 }

@@ -12,6 +12,7 @@ public class Constants {
     public static final String ERROR_GETTING_USER = "Error Getting User";
     public static final String ERROR_UPDATING_USER = "Error updating user";
     public static final String USER_STATUS_CHANGED = "User Status Changed";
+    public static final String USER_STATUS_OR_ROLE_CHANGED = "User Status Or Role Changed";
     public static final String PASSWORD_CHANGED = "Password Changed";
     public static final String OLD_PASSWORD_IS_INCORRECT = "Old Password is incorrect";
     public static final String ERROR_CHANGING_PASSWORD = "Error changing password";
@@ -36,6 +37,10 @@ public class Constants {
     public static final String FAVORITE_NOT_FOUND = "Favorite Not Found";
     public static final String FAVORITE_DELETED_SUCCESSFULLY = "Favorite Deleted Successfully";
     public static final String ERROR_DELETING_FAVORITE = "Error Deleting Favorite";
+
+    public static final String ATLEAST_ONE_OF_STATUS_OR_ROLE_SHOULD_BE_SET = "Atleast one of status or role should be set";
+    public static final String USER_DELETED_SUCCESSFULLY = "User Deleted Successfully";
+    public static final String ERROR_DELETING_USER = "Error Deleting User";
 
 
 

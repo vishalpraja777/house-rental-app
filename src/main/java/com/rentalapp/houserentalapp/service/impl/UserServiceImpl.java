@@ -180,7 +180,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
         }
 
         try {
-            userRepository.updateStatus(status.toString(), userId);
+            userRepository.updateStatus(status, userId);
             return CustomResponseUtil.getSuccessResponse(Constants.USER_STATUS_CHANGED, HttpStatus.OK);
         } catch (Exception e) {
             log.error(Constants.ERROR_UPDATING_USER + ", possible cause: " + e.getMessage());
