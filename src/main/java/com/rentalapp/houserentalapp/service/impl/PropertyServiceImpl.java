@@ -34,7 +34,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public ResponseEntity<ResponseObject<Property>> addProperty(Property property) {
         UserDetails currentUser = SecurityUtil.getCurrentUser();
-        if(currentUser == null) {
+        if(currentUser == null || SecurityUtil.isRenter()) {
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
 

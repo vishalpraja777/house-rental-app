@@ -38,7 +38,15 @@ public class SecurityUtil {
     }
 
     public static boolean isAdmin() {
-        return Objects.requireNonNull(getCurrentUser()).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        return Objects.requireNonNull(getCurrentUser()).getAuthorities().contains(new SimpleGrantedAuthority(Users.Role.ADMIN.name()));
+    }
+
+    public static boolean isOwner() {
+        return Objects.requireNonNull(getCurrentUser()).getAuthorities().contains(new SimpleGrantedAuthority(Users.Role.OWNER.name()));
+    }
+
+    public static boolean isRenter() {
+        return Objects.requireNonNull(getCurrentUser()).getAuthorities().contains(new SimpleGrantedAuthority(Users.Role.RENTER.name()));
     }
 
     public static boolean isUserActive(Users user) {
