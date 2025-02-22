@@ -65,4 +65,10 @@ public class PropertyController {
 
     }
 
+    @GetMapping("/current-user-properties")
+    public ResponseEntity<ResponseObject<List<Property>>> getCurrentUserProperties() {
+        log.info("Get Current User Properties");
+        return propertyService.getCurrentUserProperties();
+    }
+
 }

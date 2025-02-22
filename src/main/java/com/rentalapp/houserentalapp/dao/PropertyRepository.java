@@ -21,4 +21,5 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
             "sin(radians(p.latitude)))) <= :radius")
     List<Property> searchProperties(String city, BigDecimal priceMin, BigDecimal priceMax, Property.PropertyType type, Double latitude, Double longitude, Double radius);
 
+    List<Property> findByOwnerUserId(Long userId);
 }

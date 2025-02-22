@@ -17,4 +17,6 @@ public interface PropertyService {
     ResponseEntity<ResponseObject<String>> deletePropertyById(Long propertyId);
 
     ResponseEntity<ResponseObject<List<Property>>> searchProperties(String city, BigDecimal priceMin, BigDecimal priceMax, Property.PropertyType type, Double latitude, Double longitude, Double radius);
+
+    ResponseEntity<ResponseObject<List<Property>>> getCurrentUserProperties();
 }

@@ -132,6 +132,24 @@ public class PropertyServiceImpl implements PropertyService {
         }
     }
 
+    @Override
+    public ResponseEntity<ResponseObject<List<Property>>> getCurrentUserProperties() {
+
+        UserDetails currentUser = SecurityUtil.getCurrentUser();
+        if (currentUser == null) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+        }
+
+        Users user = userRepository.findByUsername(currentUser.getUsername());
+        if(!SecurityUtil.isUserActive(user)) {
+            return CustomResponseUtil.getFailureResponse(Constants.USER_INACTIVE, HttpStatus.UNAUTHORIZED);
+        }
+
+        log.info("Getting Current User Properties for User: {}", user.getUsername());
+
+        return CustomResponseUtil.getSuccessResponse(propertyRepository.findByOwnerUserId(user.getUserId()), HttpStatus.OK);
+    }
+
     private void updatePropertyFields(Property propertyToUpdate, Property oldProperty) {
 
         if (oldProperty.getTitle() != null)
