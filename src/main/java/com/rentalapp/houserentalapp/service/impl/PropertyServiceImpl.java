@@ -48,7 +48,6 @@ public class PropertyServiceImpl implements PropertyService {
             property.setOwner(user);
             property.setCity(property.getCity().toUpperCase());
             property.setState(property.getState().toUpperCase());
-            property.setCountry(property.getCountry().toUpperCase());
 
             Property save = propertyRepository.save(property);
             return CustomResponseUtil.getSuccessResponse(save, HttpStatus.CREATED);
@@ -147,31 +146,13 @@ public class PropertyServiceImpl implements PropertyService {
 
         log.info("Getting Current User Properties for User: {}", user.getUsername());
 
-        return CustomResponseUtil.getSuccessResponse(propertyRepository.findByOwnerUserId(user.getUserId()), HttpStatus.OK);
+        List<Property> properties = propertyRepository.findByOwnerUserId(user.getUserId());
+
+        return CustomResponseUtil.getSuccessResponse(properties, HttpStatus.OK);
     }
 
     private void updatePropertyFields(Property propertyToUpdate, Property oldProperty) {
 
-        if (oldProperty.getTitle() != null)
-            propertyToUpdate.setTitle(oldProperty.getTitle());
-        if (oldProperty.getDescription() != null)
-            propertyToUpdate.setDescription(oldProperty.getDescription());
-        if (oldProperty.getAddress() != null)
-            propertyToUpdate.setAddress(oldProperty.getAddress());
-        if (oldProperty.getCity() != null)
-            propertyToUpdate.setCity(oldProperty.getCity().toUpperCase());
-        if (oldProperty.getState() != null)
-            propertyToUpdate.setState(oldProperty.getState().toUpperCase());
-        if (oldProperty.getCountry() != null)
-            propertyToUpdate.setCountry(oldProperty.getCountry().toUpperCase());
-        if (oldProperty.getPincode() != null)
-            propertyToUpdate.setPincode(oldProperty.getPincode());
-        if (oldProperty.getPrice() != null)
-            propertyToUpdate.setPrice(oldProperty.getPrice());
-        if (oldProperty.getSizeSqft() != null)
-            propertyToUpdate.setSizeSqft(oldProperty.getSizeSqft());
-        if (oldProperty.getPropertyType() != null)
-            propertyToUpdate.setPropertyType(oldProperty.getPropertyType());
         if (oldProperty.getStatus() != null)
             propertyToUpdate.setStatus(oldProperty.getStatus());
         if (oldProperty.getLatitude() != null)
@@ -180,7 +161,90 @@ public class PropertyServiceImpl implements PropertyService {
             propertyToUpdate.setLongitude(oldProperty.getLongitude());
         if (oldProperty.getGoogleMapsUrl() != null)
             propertyToUpdate.setGoogleMapsUrl(oldProperty.getGoogleMapsUrl());
-        // Update the timestamp
+
+// Property Details
+        if (oldProperty.getPropertyType() != null)
+            propertyToUpdate.setPropertyType(oldProperty.getPropertyType());
+        if (oldProperty.getBhkType() != null)
+            propertyToUpdate.setBhkType(oldProperty.getBhkType());
+        if (oldProperty.getSizeSqft() != null)
+            propertyToUpdate.setSizeSqft(oldProperty.getSizeSqft());
+        if (oldProperty.getFacing() != null)
+            propertyToUpdate.setFacing(oldProperty.getFacing());
+        if (oldProperty.getPropertyAge() != null)
+            propertyToUpdate.setPropertyAge(oldProperty.getPropertyAge());
+        if (oldProperty.getFloorType() != null)
+            propertyToUpdate.setFloorType(oldProperty.getFloorType());
+        if (oldProperty.getFloorAt() != null)
+            propertyToUpdate.setFloorAt(oldProperty.getFloorAt());
+        if (oldProperty.getTotalFloors() != null)
+            propertyToUpdate.setTotalFloors(oldProperty.getTotalFloors());
+
+// Address Details
+        if (oldProperty.getState() != null)
+            propertyToUpdate.setState(oldProperty.getState());
+        if (oldProperty.getCity() != null)
+            propertyToUpdate.setCity(oldProperty.getCity());
+        if (oldProperty.getPincode() != null)
+            propertyToUpdate.setPincode(oldProperty.getPincode());
+        if (oldProperty.getPincodeName() != null)
+            propertyToUpdate.setPincodeName(oldProperty.getPincodeName());
+        if (oldProperty.getArea() != null)
+            propertyToUpdate.setArea(oldProperty.getArea());
+        if (oldProperty.getStreetAddress() != null)
+            propertyToUpdate.setStreetAddress(oldProperty.getStreetAddress());
+
+// Price Details
+        if (oldProperty.getPrice() != null)
+            propertyToUpdate.setPrice(oldProperty.getPrice());
+        if (oldProperty.getPriceFrequency() != null)
+            propertyToUpdate.setPriceFrequency(oldProperty.getPriceFrequency());
+        if (oldProperty.getNegotiable() != null)
+            propertyToUpdate.setNegotiable(oldProperty.getNegotiable());
+        if (oldProperty.getWaterBillIncluded() != null)
+            propertyToUpdate.setWaterBillIncluded(oldProperty.getWaterBillIncluded());
+        if (oldProperty.getElectricityBillIncluded() != null)
+            propertyToUpdate.setElectricityBillIncluded(oldProperty.getElectricityBillIncluded());
+        if (oldProperty.getAvailableFrom() != null)
+            propertyToUpdate.setAvailableFrom(oldProperty.getAvailableFrom());
+        if (oldProperty.getFurnishing() != null)
+            propertyToUpdate.setFurnishing(oldProperty.getFurnishing());
+        if (oldProperty.getKitchen() != null)
+            propertyToUpdate.setKitchen(oldProperty.getKitchen());
+        if (oldProperty.getPropertyDescription() != null)
+            propertyToUpdate.setPropertyDescription(oldProperty.getPropertyDescription());
+
+// Amenities Details
+        if (oldProperty.getAvailableFor() != null)
+            propertyToUpdate.setAvailableFor(oldProperty.getAvailableFor());
+        if (oldProperty.getNoOfBathrooms() != null)
+            propertyToUpdate.setNoOfBathrooms(oldProperty.getNoOfBathrooms());
+        if (oldProperty.getParking() != null)
+            propertyToUpdate.setParking(oldProperty.getParking());
+
+// Other Amenities
+        if (oldProperty.getGatedSociety() != null)
+            propertyToUpdate.setGatedSociety(oldProperty.getGatedSociety());
+        if (oldProperty.getNonVegAllowed() != null)
+            propertyToUpdate.setNonVegAllowed(oldProperty.getNonVegAllowed());
+        if (oldProperty.getGym() != null)
+            propertyToUpdate.setGym(oldProperty.getGym());
+        if (oldProperty.getLift() != null)
+            propertyToUpdate.setLift(oldProperty.getLift());
+        if (oldProperty.getPark() != null)
+            propertyToUpdate.setPark(oldProperty.getPark());
+        if (oldProperty.getSwimmingPool() != null)
+            propertyToUpdate.setSwimmingPool(oldProperty.getSwimmingPool());
+        if (oldProperty.getPowerBackup() != null)
+            propertyToUpdate.setPowerBackup(oldProperty.getPowerBackup());
+        if (oldProperty.getGasPipeline() != null)
+            propertyToUpdate.setGasPipeline(oldProperty.getGasPipeline());
+        if (oldProperty.getAirConditioner() != null)
+            propertyToUpdate.setAirConditioner(oldProperty.getAirConditioner());
+        if (oldProperty.getWaterSupply() != null)
+            propertyToUpdate.setWaterSupply(oldProperty.getWaterSupply());
+
+//         Update the timestamp
         propertyToUpdate.setUpdatedAt(LocalDateTime.now());
 
     }

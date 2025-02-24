@@ -45,49 +45,105 @@ public class Property implements Serializable {
     @JoinColumn(name = "owner_id", nullable = false)
     private Users owner;
 
-    @Column(nullable = false, length = 100)
-    private String title;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String description;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String address;
-
-    @Column(nullable = false, length = 50)
-    private String city;
-
-    @Column(nullable = false, length = 50)
-    private String state;
-
-    @Column(nullable = false, length = 50)
-    private String country;
-
-    @Column(nullable = false, length = 50)
-    private String pincode;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
-    @Column(nullable = false)
-    private Integer sizeSqft;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PropertyType propertyType;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.AVAILABLE;
 
     @Column(nullable = false)
     private Double latitude;
-
     @Column(nullable = false)
     private Double longitude;
-
     @Column(length = 255)
     private String googleMapsUrl;
+
+    // Property Details
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PropertyType propertyType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BhkType bhkType;
+    @Column(nullable = false)
+    private Integer sizeSqft;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Facing facing;
+    @Column(nullable = false)
+    private Integer propertyAge;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FloorType floorType;
+    @Column(nullable = false)
+    private Integer floorAt;
+    @Column(nullable = false)
+    private Integer totalFloors;
+
+    // Address Details
+    @Column(nullable = false, length = 50)
+    private String state;
+    @Column(nullable = false, length = 50)
+    private String city;
+    @Column(nullable = false, length = 50)
+    private String pincode;
+    @Column(nullable = false, length = 50)
+    private String pincodeName;
+    @Column(nullable = false, length = 50)
+    private String area;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String streetAddress;
+
+    // Price Details
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+    @Column(nullable = false)
+    private String priceFrequency;
+    @Column(nullable = false)
+    private Boolean negotiable;
+    @Column(nullable = false)
+    private Boolean waterBillIncluded;
+    @Column(nullable = false)
+    private Boolean electricityBillIncluded;
+    @Column(nullable = false)
+    private LocalDateTime availableFrom;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Furnishing furnishing;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Kitchen kitchen;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String propertyDescription;
+
+    // Amenities Details
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AvailableFor availableFor;
+    @Column(nullable = false)
+    private Integer noOfBathrooms;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Parking parking;
+    // Other Amenities
+    @Column(nullable = false)
+    private Boolean gatedSociety;
+    @Column(nullable = false)
+    private Boolean nonVegAllowed;
+    @Column(nullable = false)
+    private Boolean gym;
+    @Column(nullable = false)
+    private Boolean lift;
+    @Column(nullable = false)
+    private Boolean park;
+    @Column(nullable = false)
+    private Boolean swimmingPool;
+    @Column(nullable = false)
+    private Boolean powerBackup;
+    @Column(nullable = false)
+    private Boolean gasPipeline;
+    @Column(nullable = false)
+    private Boolean airConditioner;
+    @Column(nullable = false)
+    private Boolean waterSupply;
 
     @JsonIgnore
     @Column(nullable = false, updatable = false)
@@ -97,12 +153,45 @@ public class Property implements Serializable {
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public enum PropertyType {
-        APARTMENT, HOUSE, VILLA, PG, HOSTEL
+    @JsonIgnore
+    public String getPropertyTitle() {
+        return this.bhkType.name() + " near "+ this.area;
     }
 
     public enum Status {
         AVAILABLE, RENTED, INACTIVE
+    }
+
+    public enum PropertyType {
+        APARTMENT, INDEPENDENT_HOUSE, INDEPENDENT_VILLA, GATED_COMMUNITY_HOUSE, GATED_COMMUNITY_VILLA, PG, HOSTEL
+    }
+
+    public enum BhkType {
+        RK, BHK1, BHK2, BHK3, BHK4, BHK5
+    }
+
+    public enum Facing {
+        NORTH, SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST
+    }
+
+    public enum FloorType {
+        LAMINATE_FLOORING, VINYL_FLOORING, HARDWOOD_FLOORING, CARPET_FLOORING, CERAMIC_TILES_FLOORING, STONE_FLOORING, CONCRETE_FLOORING, MARBLE_FLOORING, GRANITE_FLOORING, BAMBOO_FLOORING
+    }
+
+    public enum Furnishing {
+        FULLY_FURNISHED, SEMI_FURNISHED, UN_FURNISHED
+    }
+
+    public enum Kitchen {
+        ISLAND_MODULAR, PARALLEL_MODULAR, STRAIGHT_MODULAR, L_SHAPED_MODULAR, U_SHAPED_MODULAR, OPEN_MODULAR
+    }
+
+    public enum AvailableFor {
+        FAMILY, SINGLE_MEN, SINGLE_WOMEN
+    }
+
+    public enum Parking {
+        NO_PARKING, BIKE, CAR, CAR_AND_BIKE
     }
 
 }

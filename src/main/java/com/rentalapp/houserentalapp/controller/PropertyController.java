@@ -25,7 +25,7 @@ public class PropertyController {
     @PostMapping("/add-property")
     @Operation(summary = "Add Property API")
     public ResponseEntity<ResponseObject<Property>> addProperty(@RequestBody Property property) {
-        log.info("Add Property API Called for Property: {}", property.getTitle());
+        log.info("Add Property API Called for Property: {}", property.getPropertyTitle());
         return propertyService.addProperty(property);
     }
 
