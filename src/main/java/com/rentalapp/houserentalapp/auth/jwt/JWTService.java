@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class JWTService {
 
     private String SECRET_KEY = "";
-    private static final int TOKEN_VALIDITY = 2 * 60 * 60 * 1000; // 2 Hour
+    private static final int TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 Hour
 
     public JWTService() {
         try {
