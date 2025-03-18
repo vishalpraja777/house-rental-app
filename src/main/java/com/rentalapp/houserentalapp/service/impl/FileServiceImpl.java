@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,10 +32,17 @@ public class FileServiceImpl implements FileService {
     private PropertyMediaRepository propertyMediaRepository;
 
     @Override
-    public ResponseEntity<ResponseObject<PropertyMedia>> uploadPropertyMedia(Long propertyId, MultipartFile file) {
+    public ResponseEntity<ResponseObject<List<PropertyMedia>>> uploadPropertyMedia(Long propertyId, List<MultipartFile> files) {
 
-        if (file.isEmpty() || (file.getContentType() == null || !(file.getContentType().startsWith("image") || file.getContentType().startsWith("video")))) {
-            return CustomResponseUtil.getFailureResponse(Constants.INCORRECT_IMAGE_OR_VIDEO_FILE, HttpStatus.BAD_REQUEST);
+        List<PropertyMedia> propertyMediaList = new ArrayList<>();
+        List<MultipartFile> validFiles = new ArrayList<>();
+
+        for(MultipartFile file : files) {
+            if (!(file.isEmpty() || (file.getContentType() == null
+                    || !(file.getContentType().startsWith("image") || file.getContentType().startsWith("video"))))) {
+                validFiles.add(file);
+//                return CustomResponseUtil.getFailureResponse(Constants.INCORRECT_IMAGE_OR_VIDEO_FILE, HttpStatus.BAD_REQUEST);
+            }
         }
 
         Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
@@ -45,25 +54,30 @@ public class FileServiceImpl implements FileService {
             log.error(Constants.USER_UNAUTHORIZED + " : " + Objects.requireNonNull(SecurityUtil.getCurrentUser()).getUsername());
             return CustomResponseUtil.getFailureResponse(Constants.USER_UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
         }
-
-        try {
+        for(MultipartFile file : validFiles) {
+            try {
 //            TODO: Upload file to cloud
-            String mediaUrl = "URL"; // cloudService.uploadFile(file);
+                String mediaUrl = "URL"; // cloudService.uploadFile(file);
 
 //            Get Media Type
-            PropertyMedia.MediaType mediaType = file.getContentType().startsWith("video") ? PropertyMedia.MediaType.VIDEO : PropertyMedia.MediaType.IMAGE;
+                PropertyMedia.MediaType mediaType = file.getContentType().startsWith("video") ? PropertyMedia.MediaType.VIDEO : PropertyMedia.MediaType.IMAGE;
 
-            PropertyMedia propertyMedia = new PropertyMedia();
-            propertyMedia.setProperty(optionalProperty.get());
-            propertyMedia.setMediaUrl(mediaUrl);
-            propertyMedia.setMediaType(mediaType);
+                PropertyMedia propertyMedia = new PropertyMedia();
+                propertyMedia.setProperty(optionalProperty.get());
+                propertyMedia.setMediaUrl(mediaUrl);
+                propertyMedia.setMediaType(mediaType);
 
-            PropertyMedia savedPropertyMedia = propertyMediaRepository.save(propertyMedia);
-            return CustomResponseUtil.getSuccessResponse(savedPropertyMedia, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error(Constants.ERROR_UPLOADING_PROPERTY_MEDIA + ", possible cause: " + e.getMessage());
-            return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPLOADING_PROPERTY_MEDIA, HttpStatus.INTERNAL_SERVER_ERROR);
+                PropertyMedia savedPropertyMedia = propertyMediaRepository.save(propertyMedia);
+                propertyMediaList.add(savedPropertyMedia);
+            } catch (Exception e) {
+                log.error(Constants.ERROR_UPLOADING_PROPERTY_MEDIA + " " + file.getName() + ", possible cause: " + e.getMessage());
+            }
         }
+            return CustomResponseUtil.getSuccessResponse(propertyMediaList, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            log.error(Constants.ERROR_UPLOADING_PROPERTY_MEDIA + ", possible cause: " + e.getMessage());
+//            return CustomResponseUtil.getFailureResponse(Constants.ERROR_UPLOADING_PROPERTY_MEDIA, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
     }
 

@@ -49,9 +49,9 @@ public class Property implements Serializable {
     @Column(nullable = false)
     private Status status = Status.AVAILABLE;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double latitude;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double longitude;
     @Column(length = 255)
     private String googleMapsUrl;
@@ -86,17 +86,15 @@ public class Property implements Serializable {
     @Column(nullable = false, length = 50)
     private String pincode;
     @Column(nullable = false, length = 50)
-    private String pincodeName;
-    @Column(nullable = false, length = 50)
     private String area;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String streetAddress;
 
     // Price Details
+    @Column(nullable = false)
+    private SellType sellType;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
-    @Column(nullable = false)
-    private String priceFrequency;
     @Column(nullable = false)
     private Boolean negotiable;
     @Column(nullable = false)
@@ -115,19 +113,26 @@ public class Property implements Serializable {
     private String propertyDescription;
 
     // Amenities Details
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private List<AvailableFor> availableFor;
     @Column(nullable = false)
-    private AvailableFor availableFor;
+    private Boolean availableForMen;
     @Column(nullable = false)
-    private Integer noOfBathrooms;
+    private Boolean availableForWomen;
+    @Column(nullable = false)
+    private Boolean availableForFamily;
+
+    @Column(nullable = false)
+    private Integer noOfBathrooms;  
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Parking parking;
     // Other Amenities
     @Column(nullable = false)
     private Boolean gatedSociety;
-    @Column(nullable = false)
-    private Boolean nonVegAllowed;
+//    @Column(nullable = false)
+//    private Boolean nonVegAllowed;
     @Column(nullable = false)
     private Boolean gym;
     @Column(nullable = false)
@@ -138,12 +143,16 @@ public class Property implements Serializable {
     private Boolean swimmingPool;
     @Column(nullable = false)
     private Boolean powerBackup;
-    @Column(nullable = false)
-    private Boolean gasPipeline;
+//    @Column(nullable = false)
+//    private Boolean gasPipeline;
     @Column(nullable = false)
     private Boolean airConditioner;
     @Column(nullable = false)
     private Boolean waterSupply;
+    @Column(nullable = false)
+    private Boolean waterFilter;
+    @Column(nullable = false)
+    private Boolean geyser;
 
     @JsonIgnore
     @Column(nullable = false, updatable = false)
@@ -192,6 +201,10 @@ public class Property implements Serializable {
 
     public enum Parking {
         NO_PARKING, BIKE, CAR, CAR_AND_BIKE
+    }
+
+    public enum SellType {
+        RENT, SELL
     }
 
 }

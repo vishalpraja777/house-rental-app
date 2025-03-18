@@ -1,5 +1,6 @@
 package com.rentalapp.houserentalapp.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -48,6 +49,7 @@ public class PropertyMedia implements Serializable {
     @Column(nullable = false)
     private MediaType mediaType;
 
+    @JsonIgnore
     @Column(nullable = false, updatable = false)
     private LocalDateTime uploadedAt = LocalDateTime.now();
 

@@ -187,8 +187,6 @@ public class PropertyServiceImpl implements PropertyService {
             propertyToUpdate.setCity(oldProperty.getCity());
         if (oldProperty.getPincode() != null)
             propertyToUpdate.setPincode(oldProperty.getPincode());
-        if (oldProperty.getPincodeName() != null)
-            propertyToUpdate.setPincodeName(oldProperty.getPincodeName());
         if (oldProperty.getArea() != null)
             propertyToUpdate.setArea(oldProperty.getArea());
         if (oldProperty.getStreetAddress() != null)
@@ -197,8 +195,6 @@ public class PropertyServiceImpl implements PropertyService {
 // Price Details
         if (oldProperty.getPrice() != null)
             propertyToUpdate.setPrice(oldProperty.getPrice());
-        if (oldProperty.getPriceFrequency() != null)
-            propertyToUpdate.setPriceFrequency(oldProperty.getPriceFrequency());
         if (oldProperty.getNegotiable() != null)
             propertyToUpdate.setNegotiable(oldProperty.getNegotiable());
         if (oldProperty.getWaterBillIncluded() != null)
@@ -215,8 +211,14 @@ public class PropertyServiceImpl implements PropertyService {
             propertyToUpdate.setPropertyDescription(oldProperty.getPropertyDescription());
 
 // Amenities Details
-        if (oldProperty.getAvailableFor() != null)
-            propertyToUpdate.setAvailableFor(oldProperty.getAvailableFor());
+//        if (oldProperty.getAvailableFor() != null)
+//            propertyToUpdate.setAvailableFor(oldProperty.getAvailableFor());
+        if (oldProperty.getAvailableForMen() != null)
+            propertyToUpdate.setAvailableForMen(oldProperty.getAvailableForMen());
+        if (oldProperty.getAvailableForWomen() != null)
+            propertyToUpdate.setAvailableForWomen(oldProperty.getAvailableForWomen());
+        if (oldProperty.getAvailableForFamily() != null)
+            propertyToUpdate.setAvailableForFamily(oldProperty.getAvailableForFamily());
         if (oldProperty.getNoOfBathrooms() != null)
             propertyToUpdate.setNoOfBathrooms(oldProperty.getNoOfBathrooms());
         if (oldProperty.getParking() != null)
@@ -225,8 +227,8 @@ public class PropertyServiceImpl implements PropertyService {
 // Other Amenities
         if (oldProperty.getGatedSociety() != null)
             propertyToUpdate.setGatedSociety(oldProperty.getGatedSociety());
-        if (oldProperty.getNonVegAllowed() != null)
-            propertyToUpdate.setNonVegAllowed(oldProperty.getNonVegAllowed());
+//        if (oldProperty.getNonVegAllowed() != null)
+//            propertyToUpdate.setNonVegAllowed(oldProperty.getNonVegAllowed());
         if (oldProperty.getGym() != null)
             propertyToUpdate.setGym(oldProperty.getGym());
         if (oldProperty.getLift() != null)
@@ -237,12 +239,16 @@ public class PropertyServiceImpl implements PropertyService {
             propertyToUpdate.setSwimmingPool(oldProperty.getSwimmingPool());
         if (oldProperty.getPowerBackup() != null)
             propertyToUpdate.setPowerBackup(oldProperty.getPowerBackup());
-        if (oldProperty.getGasPipeline() != null)
-            propertyToUpdate.setGasPipeline(oldProperty.getGasPipeline());
+//        if (oldProperty.getGasPipeline() != null)
+//            propertyToUpdate.setGasPipeline(oldProperty.getGasPipeline());
         if (oldProperty.getAirConditioner() != null)
             propertyToUpdate.setAirConditioner(oldProperty.getAirConditioner());
         if (oldProperty.getWaterSupply() != null)
             propertyToUpdate.setWaterSupply(oldProperty.getWaterSupply());
+        if (oldProperty.getWaterFilter() != null)
+            propertyToUpdate.setWaterFilter(oldProperty.getWaterFilter());
+        if (oldProperty.getGeyser() != null)
+            propertyToUpdate.setGeyser(oldProperty.getGeyser());
 
 //         Update the timestamp
         propertyToUpdate.setUpdatedAt(LocalDateTime.now());

@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/file")
@@ -22,7 +24,8 @@ public class FileController {
 
     @PostMapping("/upload-property-media")
     @Operation(summary = "Upload Property Media API")
-    public ResponseEntity<ResponseObject<PropertyMedia>> uploadPropertyMedia(@RequestParam Long propertyId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseObject<List<PropertyMedia>>> uploadPropertyMedia(@RequestParam Long propertyId,
+                                                                             @RequestParam("file") List<MultipartFile> file) {
         log.info("Upload property media API called for propertyId: " + propertyId);
         return fileService.uploadPropertyMedia(propertyId, file);
     }
