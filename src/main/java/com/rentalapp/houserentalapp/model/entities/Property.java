@@ -47,7 +47,7 @@ public class Property implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.AVAILABLE;
+    private Status status = Status.PENDING_APPROVAL;
 
     @Column(nullable = true)
     private Double latitude;
@@ -168,7 +168,7 @@ public class Property implements Serializable {
     }
 
     public enum Status {
-        AVAILABLE, RENTED, INACTIVE
+        ACTIVE, RENTED, PENDING_APPROVAL, INACTIVE, REJECTED
     }
 
     public enum PropertyType {
