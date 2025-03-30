@@ -42,6 +42,6 @@ public class Constants {
     public static final String USER_DELETED_SUCCESSFULLY = "User Deleted Successfully";
     public static final String ERROR_DELETING_USER = "Error Deleting User";
 
-
+    public static final String ERROR_SENDING_OTP = "Error Sending OTP";
 
 }

@@ -30,7 +30,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        String[] unAuthenticatedEndpoints = {"/api/auth/register", "/api/auth/login", "/api/properties/get-property/*", "/api/properties/search"};
+        String[] unAuthenticatedEndpoints = {"/api/auth/register", "/api/auth/login", "/api/auth/**",
+                "/api/properties/get-property/*", "/api/properties/search"};
 
         return http
                 .csrf(customizer -> customizer.disable())
