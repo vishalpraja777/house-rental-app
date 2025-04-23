@@ -37,21 +37,21 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "User Register API")
-    public ResponseEntity<ResponseObject<Users>> register(@RequestBody RegisterUserDto user) {
+    public ResponseEntity<ResponseObject<String>> register(@RequestBody RegisterUserDto user) {
         log.info("User Register API Called for User: {}", user.getUsername());
         return userService.register(user);
     }
 
     @GetMapping(value = "/generateOTP/{phoneNumber}")
     public ResponseEntity<ResponseObject<String>>  generateOTP(@PathVariable(name = "phoneNumber") String phoneNumber){
-
+        log.info("Generate OTP API Called for Phone Number: {}", phoneNumber);
         return otpService.generateOTP(phoneNumber);
     }
 
     @GetMapping("/verifyOTP/{phoneNumber}")
     public ResponseEntity<ResponseObject<OtpVerificationResponse>> verifyUserOTP(@PathVariable(name = "phoneNumber") String phoneNumber,
                                                                                  @RequestParam(name = "otp") String otp) {
-
+        log.info("Verify OTP API Called for Phone Number: {}", phoneNumber);
         return otpService.verifyUserOTP(phoneNumber, otp);
 
     }

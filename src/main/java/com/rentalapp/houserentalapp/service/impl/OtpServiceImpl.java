@@ -1,7 +1,9 @@
 package com.rentalapp.houserentalapp.service.impl;
 
+import com.rentalapp.houserentalapp.auth.jwt.JWTService;
 import com.rentalapp.houserentalapp.dao.UserRepository;
 import com.rentalapp.houserentalapp.model.OtpVerificationResponse;
+import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.OtpService;
 import com.rentalapp.houserentalapp.service.TwilioService;
 import com.rentalapp.houserentalapp.util.Constants;
@@ -30,6 +32,9 @@ public class OtpServiceImpl implements OtpService {
     @Autowired
     private TwilioService twilioService;
 
+    @Autowired
+    private JWTService jwtService;
+
     @Override
     public ResponseEntity<ResponseObject<String>> generateOTP(String phoneNumber) {
         try {
@@ -52,8 +57,13 @@ public class OtpServiceImpl implements OtpService {
 
             if(Objects.equals(verificationCheck.getStatus(), "approved")) {
                 otpVerificationResponse.setOtpVerified(true);
-                if (nonNull(userRepository.findByPhone(phoneNumber))) {
+                Users user = userRepository.findByPhone(phoneNumber);
+                if (nonNull(user)) {
                     otpVerificationResponse.setIsRegistered(true);
+
+                    String token = jwtService.generateToken(user);
+                    otpVerificationResponse.setJwtToken(token);
+
                     return CustomResponseUtil.getSuccessResponse(otpVerificationResponse, HttpStatus.OK);
                 }
                 otpVerificationResponse.setIsRegistered(false);

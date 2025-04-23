@@ -65,7 +65,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     }
 
     @Override
-    public ResponseEntity<ResponseObject<Users>> register(RegisterUserDto user) {
+    public ResponseEntity<ResponseObject<String>> register(RegisterUserDto user) {
 
         if((userRepository.findByUsername(user.getUsername()) != null) ||
                 (userRepository.findByEmail(user.getEmail()) != null) ||
@@ -87,7 +87,9 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
 
             Users savedUser = userRepository.save(userToSave);
 
-            return CustomResponseUtil.getSuccessResponse(savedUser, HttpStatus.CREATED);
+            String token = jwtService.generateToken(savedUser);
+
+            return CustomResponseUtil.getSuccessResponse(token, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             log.error(Constants.ERROR_CREATING_USER + ", possible cause: " + Constants.ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT);
             return CustomResponseUtil.getFailureResponse(Constants.ADMIN_CANNOT_BE_REGISTERED_BY_DEFAULT, HttpStatus.BAD_REQUEST);
