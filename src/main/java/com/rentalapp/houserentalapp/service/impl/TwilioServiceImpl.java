@@ -4,25 +4,20 @@ import com.rentalapp.houserentalapp.service.TwilioService;
 import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TwilioServiceImpl implements TwilioService {
 
-//    @Value("${twilio.account.sid}")
-//    private String twilioAccountSid;
-//
-//    @Value("${twilio.auth.token}")
-//    private String twilioAuthToken;
-
     @Value("${twilio.service.id}")
     private String twilioServiceId;
 
-    public TwilioServiceImpl(@Value("${twilio.account.sid}") String twilioAccountSid, @Value("${twilio.auth.token}") String twilioAuthToken) {
-//        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        Twilio.init(twilioAccountSid, twilioAuthToken);
-    }
+//    public TwilioServiceImpl(@Value("${twilio.account.sid}") String twilioAccountSid, @Value("${twilio.auth.token}") String twilioAuthToken) {
+//        log.info("Twilio initialized");
+//        Twilio.init(twilioAccountSid, twilioAuthToken);
+//    }
 
     @Override
     public Verification generateOTP(String phoneNumber, String channelType) {
