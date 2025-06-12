@@ -108,7 +108,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             if(authentication.isAuthenticated()) {
-                Users databaseUser = userRepository.findByUsername(user.getUsername());
+                Users databaseUser = userRepository.findByUsernameOrEmailOrPhone(user.getUsername());
                 String token = jwtService.generateToken(databaseUser);
 
                 return CustomResponseUtil.getSuccessResponse(token, HttpStatus.OK);

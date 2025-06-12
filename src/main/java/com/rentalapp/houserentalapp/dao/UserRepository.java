@@ -30,4 +30,19 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Modifying
     @Query("update Users set password=:encodedPassword where userId=:userId")
     Integer changePassword(String encodedPassword, Long userId);
+
+    // Optional: Combined query method
+    @Query("SELECT u FROM Users u WHERE " +
+            "LOWER(u.username) = LOWER(:credential) OR " +
+            "LOWER(u.email) = LOWER(:credential) OR " +
+            "u.phone = :credential")
+    Users findByUsernameOrEmailOrPhone(@Param("credential") String credential);
+
+    // Check if user exists by any credential
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE " +
+            "LOWER(u.username) = LOWER(:credential) OR " +
+            "LOWER(u.email) = LOWER(:credential) OR " +
+            "u.phone = :credential")
+    boolean existsByUsernameOrEmailOrPhone(@Param("credential") String credential);
+
 }
