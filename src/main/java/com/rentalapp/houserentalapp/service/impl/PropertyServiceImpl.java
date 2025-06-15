@@ -46,8 +46,8 @@ public class PropertyServiceImpl implements PropertyService {
 
         try {
             property.setOwner(user);
-            property.setCity(property.getCity().toUpperCase());
-            property.setState(property.getState().toUpperCase());
+//            property.setCity(property.getCity().toUpperCase());
+//            property.setState(property.getState().toUpperCase());
 
             Property save = propertyRepository.save(property);
             return CustomResponseUtil.getSuccessResponse(save, HttpStatus.CREATED);

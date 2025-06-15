@@ -105,6 +105,7 @@ public class UserServiceImpl extends UserServiceBaseImpl implements UserService 
     public ResponseEntity<ResponseObject<String>> login(LoginUserDto user) {
 
         try {
+            log.info("Getting user based on username/phone number/email" + user.getUsername());
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             if(authentication.isAuthenticated()) {
