@@ -1,5 +1,6 @@
 package com.rentalapp.houserentalapp.service;
 
+import com.rentalapp.houserentalapp.model.PropertyFilterDTO;
 import com.rentalapp.houserentalapp.model.entities.Property;
 import com.rentalapp.houserentalapp.util.ResponseObject;
 import org.springframework.http.ResponseEntity;
@@ -19,4 +20,6 @@ public interface PropertyService {
     ResponseEntity<ResponseObject<List<Property>>> searchProperties(String city, BigDecimal priceMin, BigDecimal priceMax, Property.PropertyType type, Double latitude, Double longitude, Double radius);
 
     ResponseEntity<ResponseObject<List<Property>>> getCurrentUserProperties();
+
+    ResponseEntity<ResponseObject<List<Property>>> searchPropertiesV2(PropertyFilterDTO propertyFilterDTO);
 }

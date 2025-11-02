@@ -92,7 +92,7 @@ public class Property implements Serializable {
 
     // Price Details
     @Column(nullable = false)
-    private SellType sellType;
+    private SellType sellType = SellType.RENT;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
     @Column(nullable = false)

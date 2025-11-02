@@ -1,7 +1,9 @@
 package com.rentalapp.houserentalapp.service.impl;
 
 import com.rentalapp.houserentalapp.dao.PropertyRepository;
+import com.rentalapp.houserentalapp.dao.Specification.PropertySpecification;
 import com.rentalapp.houserentalapp.dao.UserRepository;
+import com.rentalapp.houserentalapp.model.PropertyFilterDTO;
 import com.rentalapp.houserentalapp.model.entities.Property;
 import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.PropertyService;
@@ -148,6 +150,12 @@ public class PropertyServiceImpl implements PropertyService {
 
         List<Property> properties = propertyRepository.findByOwnerUserId(user.getUserId());
 
+        return CustomResponseUtil.getSuccessResponse(properties, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject<List<Property>>> searchPropertiesV2(PropertyFilterDTO propertyFilterDTO) {
+        List<Property> properties = propertyRepository.findAll(PropertySpecification.filterProperties(propertyFilterDTO));
         return CustomResponseUtil.getSuccessResponse(properties, HttpStatus.OK);
     }
 

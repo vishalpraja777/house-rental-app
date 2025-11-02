@@ -1,5 +1,6 @@
 package com.rentalapp.houserentalapp.controller;
 
+import com.rentalapp.houserentalapp.model.PropertyFilterDTO;
 import com.rentalapp.houserentalapp.model.entities.Property;
 import com.rentalapp.houserentalapp.service.PropertyService;
 import com.rentalapp.houserentalapp.util.ResponseObject;
@@ -62,6 +63,14 @@ public class PropertyController {
 
         log.info("Search Property API Called for city: {}, priceMin: {}, priceMax: {}, type: {}, latitude: {}, longitude: {}, radius: {}", city, priceMin, priceMax, type, latitude, longitude, radius);
         return propertyService.searchProperties(city, priceMin, priceMax, type, latitude, longitude, radius);
+
+    }
+
+    @PostMapping("/search-v2")
+    public ResponseEntity<ResponseObject<List<Property>>> searchPropertiesV2(@RequestBody PropertyFilterDTO propertyFilterDTO) {
+
+        log.info("Search V2 Property API Called for city: {}", propertyFilterDTO.getSelectedCity());
+        return propertyService.searchPropertiesV2(propertyFilterDTO);
 
     }
 
