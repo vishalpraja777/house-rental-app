@@ -52,7 +52,7 @@ public class PropertyFilterDTO {
         this.priceRangeStart = 0;
         this.priceRangeEnd = 100000;
         this.sizeRangeStart = 0;
-        this.sizeRangeEnd = 5000;
+        this.sizeRangeEnd = 50000;
         this.showFilters = false;
     }
 

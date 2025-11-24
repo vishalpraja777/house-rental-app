@@ -31,7 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         String[] unAuthenticatedEndpoints = {"/api/auth/register", "/api/auth/login", "/api/auth/**",
-                "/api/properties/get-property/*", "/api/properties/search", "/actuator/**", "/swagger-ui/**", "/info/**"};
+                "/api/properties/get-property/*", "/api/properties/search", "/actuator/**", "/swagger-ui/**", "/info/**",
+        "/api/properties/search-v2"};
 
         return http
                 .csrf(customizer -> customizer.disable())
