@@ -48,20 +48,20 @@ public class PropertySpecification {
             }
 
             // Price Range
-            if (filter.getPriceRangeStart() != 0 && filter.getPriceRangeEnd() != 0) {
+            if (filter.getPriceRange().getStart() != 0 && filter.getPriceRange().getEnd() != 0) {
                 predicates.add(cb.between(
                         root.get("price"),
-                        BigDecimal.valueOf(filter.getPriceRangeStart()),
-                        BigDecimal.valueOf(filter.getPriceRangeEnd())
+                        BigDecimal.valueOf(filter.getPriceRange().getStart()),
+                        BigDecimal.valueOf(filter.getPriceRange().getEnd())
                 ));
             }
 
             // Size Range
-            if (filter.getSizeRangeStart() != 0 && filter.getSizeRangeEnd() != 0) {
+            if (filter.getSizeRange().getStart() != 0 && filter.getSizeRange().getEnd() != 0) {
                 predicates.add(cb.between(
                         root.get("sizeSqft"),
-                        filter.getSizeRangeStart(),
-                        filter.getSizeRangeEnd()
+                        filter.getSizeRange().getStart(),
+                        filter.getSizeRange().getEnd()
                 ));
             }
 

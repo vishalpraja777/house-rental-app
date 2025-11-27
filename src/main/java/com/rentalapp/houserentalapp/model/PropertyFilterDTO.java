@@ -16,10 +16,13 @@ public class PropertyFilterDTO {
     private List<Furnishing> selectedFurnishings;
     private List<Parking> selectedParkings;
 
-    private double priceRangeStart;
-    private double priceRangeEnd;
-    private double sizeRangeStart;
-    private double sizeRangeEnd;
+//    private double priceRangeStart;
+//    private double priceRangeEnd;
+//    private double sizeRangeStart;
+//    private double sizeRangeEnd;
+
+    private Range<Double> priceRange;
+    private Range<Double> sizeRange;
 
     private SellType selectedSellType;
     private boolean showFilters;
@@ -49,11 +52,24 @@ public class PropertyFilterDTO {
     public PropertyFilterDTO() {
         this.selectedCity = "";
         this.selectedSellType = SellType.RENT;
-        this.priceRangeStart = 0;
-        this.priceRangeEnd = 100000;
-        this.sizeRangeStart = 0;
-        this.sizeRangeEnd = 50000;
+//        this.priceRangeStart = 0;
+//        this.priceRangeEnd = 100000;
+//        this.sizeRangeStart = 0;
+//        this.sizeRangeEnd = 50000;
+        this.priceRange = new Range<>();
+        this.sizeRange = new Range<>();
+        this.priceRange.start = 0.0;
+        this.priceRange.end = 100000.0;
+        this.sizeRange.start = 0.0;
+        this.sizeRange.end = 50000.0;
         this.showFilters = false;
+    }
+
+    @Getter
+    @Setter
+    public class Range<T> {
+        private T start;
+        private T end;
     }
 
 }
