@@ -4,6 +4,7 @@ import com.rentalapp.houserentalapp.model.entities.Property.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -11,6 +12,8 @@ import java.util.List;
 public class PropertyFilterDTO {
 
     private String selectedCity;
+    private List<String> selectedPincodes;
+    private List<String> selectedAreas;
     private List<PropertyType> selectedPropertyTypes;
     private List<BhkType> selectedBhkTypes;
     private List<Furnishing> selectedFurnishings;
@@ -51,6 +54,8 @@ public class PropertyFilterDTO {
 
     public PropertyFilterDTO() {
         this.selectedCity = "";
+        this.selectedPincodes = new ArrayList<>();
+        this.selectedAreas = new ArrayList<>();
         this.selectedSellType = SellType.RENT;
 //        this.priceRangeStart = 0;
 //        this.priceRangeEnd = 100000;

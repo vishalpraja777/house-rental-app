@@ -22,6 +22,45 @@ public class PropertySpecification {
                         filter.getSelectedCity().toLowerCase()));
             }
 
+            // Match in ANY of city, pincode or area
+//            Predicate locationOrPredicate = null;
+
+            List<Predicate> locationPredicates = new ArrayList<>();
+
+//            if (filter.getSelectedCity() != null && !filter.getSelectedCity().isEmpty()) {
+//                locationPredicates.add(cb.equal(cb.lower(root.get("city")), filter.getSelectedCity().toLowerCase()));
+//            }
+
+            // Pincode List
+            if (filter.getSelectedPincodes() != null && !filter.getSelectedPincodes().isEmpty()) {
+                // Convert all to lowercase for case-insensitive matching
+                List<String> lowerPincodes = filter.getSelectedPincodes()
+                        .stream()
+                        .map(String::toLowerCase)
+                        .toList();
+
+                locationPredicates.add(
+                        cb.lower(root.get("pincode")).in(lowerPincodes)
+                );
+            }
+
+            // Area List
+            if (filter.getSelectedAreas() != null && !filter.getSelectedAreas().isEmpty()) {
+
+                List<String> lowerAreas = filter.getSelectedAreas()
+                        .stream()
+                        .map(String::toLowerCase)
+                        .toList();
+
+                locationPredicates.add(
+                        cb.lower(root.get("area")).in(lowerAreas)
+                );
+            }
+
+            if (!locationPredicates.isEmpty()) {
+                predicates.add(cb.or(locationPredicates.toArray(new Predicate[0])));
+            }
+
             // Property Type
             if (filter.getSelectedPropertyTypes() != null && !filter.getSelectedPropertyTypes().isEmpty()) {
                 predicates.add(root.get("propertyType").in(filter.getSelectedPropertyTypes()));
