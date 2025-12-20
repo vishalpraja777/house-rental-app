@@ -35,6 +35,14 @@ build/
 src/main/resources/application-dev.properties
 src/main/resources/application-prod.properties
 
+src/main/java/com/rentalapp/houserentalapp/service/impl/GoogleDriveImageUpload.java
+src/main/java/com/rentalapp/houserentalapp/service/impl/GoogleDriveService.java
+
 *.sql
 
 .env
+cred.json
+cred_personal.json
+oauth_cred.json
+
+hs_err_pid10480.log

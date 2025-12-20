@@ -38,6 +38,7 @@ public class PropertyMedia implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mediaId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;

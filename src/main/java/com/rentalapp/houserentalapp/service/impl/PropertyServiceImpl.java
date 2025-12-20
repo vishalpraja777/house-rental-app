@@ -1,10 +1,12 @@
 package com.rentalapp.houserentalapp.service.impl;
 
+import com.rentalapp.houserentalapp.dao.PropertyMediaRepository;
 import com.rentalapp.houserentalapp.dao.PropertyRepository;
 import com.rentalapp.houserentalapp.dao.Specification.PropertySpecification;
 import com.rentalapp.houserentalapp.dao.UserRepository;
 import com.rentalapp.houserentalapp.model.PropertyFilterDTO;
 import com.rentalapp.houserentalapp.model.entities.Property;
+import com.rentalapp.houserentalapp.model.entities.PropertyMedia;
 import com.rentalapp.houserentalapp.model.entities.Users;
 import com.rentalapp.houserentalapp.service.PropertyService;
 import com.rentalapp.houserentalapp.util.Constants;
@@ -20,7 +22,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -32,6 +37,9 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PropertyMediaRepository propertyMediaRepository;
 
     @Override
     public ResponseEntity<ResponseObject<Property>> addProperty(Property property) {
@@ -66,7 +74,16 @@ public class PropertyServiceImpl implements PropertyService {
         try {
             Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
 
-            return optionalProperty.map(property -> CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK)).orElseGet(() -> CustomResponseUtil.getFailureResponse(Constants.PROPERTY_NOT_FOUND, HttpStatus.NOT_FOUND));
+            if (optionalProperty.isPresent()) {
+                Property property = optionalProperty.get();
+                Map<Long, List<PropertyMedia>> propertyMediaList = getPropertyMediaList(List.of(propertyId));
+                property.setMediaList(propertyMediaList.get(propertyId));
+                return CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK);
+            }
+
+            return CustomResponseUtil.getFailureResponse(Constants.PROPERTY_NOT_FOUND, HttpStatus.NOT_FOUND);
+
+//            return optionalProperty.map(property -> CustomResponseUtil.getSuccessResponse(property, HttpStatus.OK)).orElseGet(() -> CustomResponseUtil.getFailureResponse(Constants.PROPERTY_NOT_FOUND, HttpStatus.NOT_FOUND));
         } catch (Exception e) {
             log.error(Constants.ERROR_GETTING_PROPERTY + ", possible cause: " + e.getMessage());
             return CustomResponseUtil.getFailureResponse(Constants.ERROR_GETTING_PROPERTY, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -156,7 +173,26 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public ResponseEntity<ResponseObject<List<Property>>> searchPropertiesV2(PropertyFilterDTO propertyFilterDTO) {
         List<Property> properties = propertyRepository.findAll(PropertySpecification.filterProperties(propertyFilterDTO));
+
+        List<Long> propertyIds = properties.stream().map(Property::getPropertyId).toList();
+        Map<Long, List<PropertyMedia>> propertyMediaList = getPropertyMediaList(propertyIds);
+        properties.forEach(property -> property.setMediaList(propertyMediaList.get(property.getPropertyId())));
+
         return CustomResponseUtil.getSuccessResponse(properties, HttpStatus.OK);
+    }
+
+    private Map<Long, List<PropertyMedia>> getPropertyMediaList(List<Long> propertyIds) {
+        List<PropertyMedia> propertyMediaList = propertyMediaRepository.findByPropertyPropertyIdIn(propertyIds);
+
+        Map<Long, List<PropertyMedia>> propertyMediaMap = new HashMap<>();
+
+        propertyMediaList.forEach(propertyMedia -> {
+            List<PropertyMedia> listOfSpeceficProperty = propertyMediaMap.getOrDefault(propertyMedia.getProperty().getPropertyId(), new ArrayList<>());
+            listOfSpeceficProperty.add(propertyMedia);
+            propertyMediaMap.put(propertyMedia.getProperty().getPropertyId(), listOfSpeceficProperty);
+        });
+
+        return propertyMediaMap;
     }
 
     private void updatePropertyFields(Property propertyToUpdate, Property oldProperty) {
