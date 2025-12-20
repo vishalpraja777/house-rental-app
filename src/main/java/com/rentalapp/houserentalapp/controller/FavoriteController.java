@@ -26,7 +26,7 @@ public class FavoriteController {
         return favoriteService.addFavorite(propertyId);
     }
 
-    @DeleteMapping("/remove/{favoriteId}")
+    @PostMapping("/remove/{favoriteId}")
     public ResponseEntity<ResponseObject<String>> removeFavorite(@PathVariable Long favoriteId) {
         log.info("Delete favorite Property API called for favoriteId: " + favoriteId);
         return favoriteService.removeFavorite(favoriteId);
